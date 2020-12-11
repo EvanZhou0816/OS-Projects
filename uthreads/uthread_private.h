@@ -1,11 +1,3 @@
-/*
- *   FILE: uthread_private.h 
- * AUTHOR: Peter Demoreuille
- *  DESCR: uthreads private stuff.
- *   DATE: Mon Oct  1 10:56:31 2001
- *
- */
-
 #ifndef __uthread_private_h__
 #define __uthread_private_h__
 

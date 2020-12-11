@@ -1,11 +1,3 @@
-/*
- *   FILE: uthread_mtx.h 
- * AUTHOR: Peter Demoreuille
- *  DESCR: userland mutexes
- *   DATE: Sat Sep  8 12:37:18 2001
- *
- */
-
 #ifndef __uthread_mtx_h__
 #define __uthread_mtx_h__
 

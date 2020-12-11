@@ -1,11 +1,3 @@
-/*
- * FILE: uthread_ctx_solaris.c 
- * AUTHOR: Peter Demoreuille
- * DESCR: linux/solaris userland thread ctx swill
- * DATE: Sat Sep 8 11:26:15 2001
- *
- */
-
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>

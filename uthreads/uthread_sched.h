@@ -1,11 +1,3 @@
-/*
- *   FILE: uthread_sched.h 
- * AUTHOR: Marcelo Martins
- *  DESCR: userland thread 
- *   DATE: Mon Nov   10:00:08 2011
- *
- */
-
 #ifndef __uthread_sched_h__
 #define __uthread_sched_h__
 

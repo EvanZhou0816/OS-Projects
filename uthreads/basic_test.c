@@ -5,8 +5,6 @@
 #include <string.h>
 
 #include "uthread.h"
-//#include "uthread_mtx.h"
-//#include "uthread_cond.h"
 #include "uthread_sched.h"
 
 #define	NUM_THREADS 16
@@ -15,12 +13,7 @@
 
 uthread_id_t	thr[NUM_THREADS];
 
-
-/* XXX: we're using sprintf and write to emulate printf - but, we're not
- * really being as judicious as we should be about guarding write. */
-
 int turn;
-
 
 static void basic_tester(long a0, char* a1[]) {
 
@@ -32,7 +25,6 @@ static void basic_tester(long a0, char* a1[]) {
 	if (ret < 0)
 	{
 		perror("uthreads_test");
-		/* XXX: we should really cleanup here */
 		exit(1);
 	}
 
@@ -42,7 +34,6 @@ static void basic_tester(long a0, char* a1[]) {
 	if (ret < 0)
 	{
 		perror("uthreads_test");
-		/* XXX: we should really cleanup here */
 		exit(1);
 	}
 
@@ -61,6 +52,4 @@ int main(int argc,char **argv) {
 	uthread_setprio(thr[0], 2);
 
 	uthread_exit(0);
-
-
 }

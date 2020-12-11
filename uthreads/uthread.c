@@ -1,14 +1,3 @@
-/*
- *   FILE: uthread.c
- * AUTHOR: peter demoreuille
- *  DESCR: userland threads
- *   DATE: Sun Sep 30 23:45:00 EDT 2001
- *
- *
- * Modified to handle time slicing by Tom Doeppner
- *   DATE: Sun Jan 10, 2016
- * Further modifications in January 2020
- */
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -71,13 +60,10 @@ void uthread_init(void)
     int i;
     for (i = 0; i < UTH_MAX_UTHREADS; i++)
     {
-        /* code */
         uthreads[i].ut_id = i;
         uthreads[i].ut_state = UT_NO_STATE;
 
     }
-    
-    /* XXX: don't touch anything below here */
 
     /* these should go last, and in this order */
     uthread_sched_init();
@@ -111,17 +97,13 @@ int
 uthread_create(uthread_id_t *uidp, uthread_func_t func,
            long arg1, char *arg2[], int prio)
 {
-    //N_OT_YET_IMPLEMENTED("UTHREADS: uthread_create");
     //Find valid uthread_id
-
-    //uthread_nopreempt_on();
     uthread_id_t id_t;
     id_t = uthread_alloc();
     if (id_t==-1)
     {
         return EAGAIN;
     }
-    //uthread_nopreempt_off();
 
     //Allocate stack
    uthread_t *alloc_thr = &uthreads[id_t];
@@ -145,7 +127,6 @@ uthread_create(uthread_id_t *uidp, uthread_func_t func,
         return EPERM;
     }
 
-    
     return 0;
 }
 
@@ -169,11 +150,8 @@ uthread_create(uthread_id_t *uidp, uthread_func_t func,
  */
 void
 uthread_exit(void *status)
-{
-    //N_OT_YET_IMPLEMENTED("UTHREADS: uthread_exit");
-	
+{	
 	uthread_nopreempt_on();
-	/* ut_curthr->ut_exit = 1; */
 	ut_curthr->ut_has_exited = 1;
 	ut_curthr->ut_exit = status;
 	if (ut_curthr->ut_detached==1)
@@ -183,13 +161,12 @@ uthread_exit(void *status)
 	else
 	{
 		ut_curthr->ut_state = UT_ZOMBIE;
-		if (ut_curthr->ut_waiter!=NULL)
+		if (ut_curthr->ut_waiter != NULL)
 		{
 			uthread_wake(ut_curthr->ut_waiter);
 		}
 	}
     uthread_switch();
-	//uthread_nopreempt_off();
     PANIC("returned to a dead thread");
 }
 
@@ -220,12 +197,9 @@ uthread_exit(void *status)
  */
 int
 uthread_join(uthread_id_t uid, void **return_value)
-{
-    //N_OT_YET_IMPLEMENTED("UTHREADS: uthread_join");
-	
+{	
     if (uthreads[uid].ut_state==UT_ZOMBIE || uthreads[uid].ut_detached)
     {
-        /* code */
         return EINVAL;
     }
     
@@ -268,10 +242,8 @@ uthread_join(uthread_id_t uid, void **return_value)
 int
 uthread_detach(uthread_id_t uid)
 {
-    NOT_YET_IMPLEMENTED("UTHREADS: uthread_detach");
-    
     uthreads[uid].ut_detached = 1;
-	if (uthreads[uid].ut_state==UT_ZOMBIE)
+	if (uthreads[uid].ut_state == UT_ZOMBIE)
 	{
 		make_reapable(&uthreads[uid]);
 	}
@@ -301,8 +273,6 @@ uthread_self(void)
 
 /* ------------- private code -- */
 
-
-
 /*
  * uthread_alloc
  *
@@ -313,23 +283,18 @@ uthread_self(void)
 static uthread_id_t
 uthread_alloc(void)
 {
-    //N_OT_YET_IMPLEMENTED("UTHREADS: uthread_alloc");
     int allocated_id = -1;
-
     uthread_nopreempt_on();
     for (int i = 0; i < UTH_MAX_UTHREADS; i++)
     {
-        if (uthreads[i].ut_state==UT_NO_STATE)
+        if (uthreads[i].ut_state == UT_NO_STATE)
         {
-            
             uthreads[i].ut_state = UT_TRANSITION;
             allocated_id = i;
             break; 
         }
-        
     }
     uthread_nopreempt_off();
-
     return allocated_id;
 }
 
@@ -343,23 +308,13 @@ uthread_alloc(void)
 static void
 uthread_destroy(uthread_t *uth)
 {
-    //N_OT_YET_IMPLEMENTED("UTHREADS: uthread_destroy");
 	free_stack(uth->ut_stack);
 	uth->ut_prio = 0;
 	uth->ut_errno = uth->ut_has_exited = uth->ut_no_preempt_count = 0;
 	uth->ut_detached = 0;
 	uth->ut_exit = uth->ut_waiter = NULL;
-
-	/* uth->ut_link = NULL */
-
 	uth->ut_state = UT_NO_STATE;
-
 }
-
-
-/****************************************************************************
- * You do not have to modify any code below this line
- ****************************************************************************/
 
 static uthread_mtx_t reap_mtx;
 static uthread_cond_t reap_cond;

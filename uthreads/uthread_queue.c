@@ -1,11 +1,3 @@
-/*
- *   FILE: uthread_queue.c 
- * AUTHOR: Peter Demoreuille
- *  DESCR: queues of threads.
- *   DATE: Sun Sep  9 15:05:37 2001
- *
- */
-
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>

@@ -1,14 +1,3 @@
-/*
- *   FILE: uthread_sched.c 
- * AUTHOR: Peter Demoreuille
- *  DESCR: scheduling wack for uthreads
- *   DATE: Mon Oct  1 00:19:51 2001
- *
- * Modified to handle time slicing by Tom Doeppner
- *   DATE: Sun Jan 10, 2016
- * Further modifications in January 2020
- */
-
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -49,30 +38,13 @@ static int uthread_no_preempt;                /* preemption not allowed */
  */
 void
 uthread_yield(void) {
-    //N_OT_YET_IMPLEMENTED("UTHREADS: uthread_yield");
-	
 	uthread_nopreempt_on();
 	ut_curthr->ut_state = UT_RUNNABLE;
-	//As slide 02
-	// the current thread rejoins the run queue. When this thread is the first thread in the highest-priority non-empty thread queue
-	/*for (size_t i = UTH_MAXPRIO; i >=0; i--)
-	{
-		if (!utqueue_empty(&runq_table[i]))
-		{
-			utqueue_enqueue(&runq_table[ut_curthr->ut_prio], ut_curthr);
-			uthread_switch();
-			break;
-		}	
-	}*/
-
+	// the current thread rejoins the run queue.
 	utqueue_enqueue(&runq_table[ut_curthr->ut_prio], ut_curthr);
 	uthread_switch();
-	
-	
 	uthread_nopreempt_off();
 }
-
-
 
 /*
  * uthread_block
@@ -83,7 +55,6 @@ uthread_yield(void) {
  */
 void
 uthread_block() {
-    //N_OT_YET_IMPLEMENTED("UTHREADS: uthread_block");
 	uthread_nopreempt_on();
 	ut_curthr->ut_state = UT_WAIT;
 	uthread_switch();
@@ -102,7 +73,6 @@ uthread_block() {
  */
 void
 uthread_wake(uthread_t *uthr) {
-    //N_OT_YET_IMPLEMENTED("UTHREADS: uthread_wake");
 	if (uthr->ut_state==UT_WAIT)
 	{
 		uthr->ut_state = UT_RUNNABLE;
@@ -113,18 +83,12 @@ uthread_wake(uthread_t *uthr) {
 	}
 	uthread_nopreempt_on();
 	if (uthr->ut_prio>ut_curthr->ut_prio&&!uthread_no_preempt)
-	{
-		/* !!!Attention!!! */
-		
+	{	
 		if (ut_curthr->ut_has_exited)
 		{
-			// uthread_switch();
-			//panic
 			PANIC("Exited thread calling wake");
-
 		}
 		uthread_yield();
-		
 	}
 	uthread_nopreempt_off();
 }
@@ -147,7 +111,6 @@ uthread_wake(uthread_t *uthr) {
  */
 int
 uthread_setprio(uthread_id_t id, int prio) {
-    //N_OT_YET_IMPLEMENTED("UTHREADS: uthread_setprio");
 	uthread_nopreempt_on();
 	uthread_t *uth = &uthreads[id];
 	int prev_prio = uth->ut_prio;
@@ -159,9 +122,7 @@ uthread_setprio(uthread_id_t id, int prio) {
 	{
 		printf("we are here in setprio for RUNNABLE thread %d\n",id);
 		uthread_nopreempt_on();
-
 		utqueue_remove(&runq_table[prev_prio],uth);
-				
 		utqueue_enqueue(&runq_table[prio], uth);
 		uthread_nopreempt_off();
 		
@@ -218,11 +179,9 @@ void
 uthread_switch() {
     assert(ut_curthr->ut_no_preempt_count > 0);
     assert(uthread_no_preempt);
-    
-    //N_OT_YET_IMPLEMENTED("UTHREADS: uthread_switch");
 	uthread_t* ut_nexthr=NULL;
 
-	for (int i = UTH_MAXPRIO; i>=0; i--)
+	for (int i = UTH_MAXPRIO; i >= 0; i--)
 	{
 		if (!utqueue_empty(&runq_table[i]))
 		{
@@ -230,16 +189,14 @@ uthread_switch() {
 			break;
 		}
 	}
-	if (ut_nexthr==NULL)
+	if (ut_nexthr == NULL)
 	{
 		PANIC("no runnable threads");
 	}
-
-	//need temp for curthr
+	//need temp var for curthr
 	uthread_t* prev_curthr = ut_curthr;
 	ut_curthr = ut_nexthr;
 	uthread_swapcontext(&prev_curthr->ut_ctx, &ut_nexthr->ut_ctx);
-	
 	ut_curthr->ut_state = UT_ON_CPU;
 	return;
 	
@@ -257,7 +214,7 @@ void
 uthread_sched_init(void) {
     int i;
 	printf("We are here in utqueue init\n");
-    for (i=0; i<=UTH_MAXPRIO; i++) {
+    for (i=0; i <= UTH_MAXPRIO; i++) {
         utqueue_init(&runq_table[i]);
     }
 	uthread_start_timer();
@@ -297,7 +254,6 @@ uthread_start_timer() {
 */
 static void
 clock_interrupt(int sig) {
-    //N_OT_YET_IMPLEMENTED("UTHREADS: clock_interrupt");
     if (uthread_no_preempt)
 	{
 		return;
@@ -305,6 +261,5 @@ clock_interrupt(int sig) {
 	{
 		sigprocmask(SIG_UNBLOCK,&VTALRMmask,0);
 		uthread_yield();
-	}
-	
+	}	
 }

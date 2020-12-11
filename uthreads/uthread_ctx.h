@@ -1,16 +1,7 @@
-/*
- *   FILE: uthread_ctx_linux.h 
- * AUTHOR: Peter Demoreuille
- *  DESCR: userland thread context switching for solaris
- *   DATE: Sat Sep  8 11:11:43 2001
- *
- */
-
 #ifndef __uthread_linux_ctx_h__
 #define __uthread_linux_ctx_h__
 
 #ifdef _REENTRANT
-//CLEAR#error Compiling -mt is NOT supported
 #endif
 
 #include <ucontext.h>

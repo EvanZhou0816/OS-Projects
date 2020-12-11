@@ -1,11 +1,3 @@
-/*
- *   FILE: uthread_cond.h 
- * AUTHOR: Peter Demoreuille
- *  DESCR: uthreads condition variables
- *   DATE: Mon Oct  1 00:16:54 2001
- *
- */
-
 #ifndef __uthread_cond_h__
 #define __uthread_cond_h__
 

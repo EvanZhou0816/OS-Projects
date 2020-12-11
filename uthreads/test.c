@@ -1,11 +1,3 @@
-/*
- *   FILE: test.c 
- * AUTHOR: Sean Andrew Cannella (scannell)
- *  DESCR: a simple test program for uthreads
- *   DATE: Mon Sep 23 14:11:48 2002
- *
- */
-
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -24,9 +16,6 @@
 uthread_id_t	thr[NUM_THREADS];
 uthread_mtx_t	mtx;
 uthread_cond_t	cond;
-        
-/* XXX: we're using sprintf and write to emulate printf - but, we're not 
- * really being as judicious as we should be about guarding write. */
 
 int turn;
 
@@ -43,11 +32,10 @@ tester(long a0, char *a1[])
         if (ret < 0) 
         {
             perror("uthreads_test");
-            /* XXX: we should really cleanup here */
             exit(1);
         }
 
-		volatile int j, k=100000000;
+		volatile int j, k = 100000000;
 		for (j=0; j<1000000; j++) {
 			k/=3;
 		}
@@ -69,7 +57,6 @@ tester(long a0, char *a1[])
     if (ret < 0) 
     {
         perror("uthreads_test");
-        /* XXX: we should really cleanup here */
         exit(1);
     }
 

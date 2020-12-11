@@ -1,18 +1,6 @@
-/*
- *   FILE: uthread_mtx.c 
- * AUTHOR: Peter Demoreuille
- *  DESCR: userland mutexes
- *   DATE: Sat Sep  8 12:40:00 2001
- *
- *
- * Modified to handle time slicing by Tom Doeppner
- *   DATE: Sun Jan 10, 2016
- */
-
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
-
 #include "list.h"
 #include "uthread.h"
 #include "uthread_mtx.h"
@@ -28,7 +16,6 @@
 void
 uthread_mtx_init(uthread_mtx_t *mtx)
 {
-    //N_OT_YET_IMPLEMENTED("UTHREADS: uthread_mtx_init");
     mtx->m_owner = NULL;
     utqueue_init(&mtx->m_waiters);
 }
@@ -45,26 +32,20 @@ uthread_mtx_init(uthread_mtx_t *mtx)
 void
 uthread_mtx_lock(uthread_mtx_t *mtx)
 {
-    //N_OT_YET_IMPLEMENTED("UTHREADS: uthread_mtx_lock");
-    
     uthread_nopreempt_on();
     if (mtx->m_owner==NULL)
     {
-        
         mtx->m_owner = ut_curthr;
         uthread_nopreempt_off();
-	return;
-        
-    }else
+	    return;
+    }
+    else
     {
         //enqueue annd block
-	utqueue_enqueue(&mtx->m_waiters,ut_curthr);
+	    utqueue_enqueue(&mtx->m_waiters,ut_curthr);
         uthread_block();
     }
-    
     uthread_nopreempt_off();
-	
-    
 }
 
 
@@ -77,11 +58,9 @@ uthread_mtx_lock(uthread_mtx_t *mtx)
 int
 uthread_mtx_trylock(uthread_mtx_t *mtx)
 {
-    NOT_YET_IMPLEMENTED("UTHREADS: uthread_mtx_trylock");
     uthread_nopreempt_on();
     if (mtx->m_owner==NULL)
     {
-        
         mtx->m_owner = ut_curthr;
         uthread_nopreempt_off();
         return 1;
@@ -101,19 +80,16 @@ uthread_mtx_trylock(uthread_mtx_t *mtx)
 void
 uthread_mtx_unlock(uthread_mtx_t *mtx)
 {
-    //N_OT_YET_IMPLEMENTED("UTHREADS: uthread_mtx_unlock");
     uthread_nopreempt_on();
     if (utqueue_empty(&mtx->m_waiters))
     {
         mtx->m_owner = NULL;
     }else
     {
-        /*!!!!!!!!!!!!*/
-        //deque and wake
+    //deque and wake
 	uthread_t* nex_owner = utqueue_dequeue(&mtx->m_waiters);
         uthread_wake(nex_owner);
         mtx->m_owner = nex_owner;
     }
     uthread_nopreempt_off();
-    
 }

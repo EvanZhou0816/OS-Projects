@@ -1,14 +1,3 @@
-/*
- *   FILE: uthread_cond.c 
- * AUTHOR: Peter Demoreuille
- *  DESCR: uthreads condition variables
- *   DATE: Mon Oct  1 01:59:37 2001
- *
- *
- * Modified to handle time slicing by Tom Doeppner
- *   DATE: Sun Jan 10, 2016
- */
-
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -28,9 +17,7 @@
 void
 uthread_cond_init(uthread_cond_t *cond)
 {
-    //N_OT_YET_IMPLEMENTED("UTHREADS: uthread_cond_init");
     utqueue_init(&cond->uc_waiters);
-
 }
 
 
@@ -46,18 +33,13 @@ uthread_cond_init(uthread_cond_t *cond)
 void
 uthread_cond_wait(uthread_cond_t *cond, uthread_mtx_t *mtx)
 {
-    //N_OT_YET_IMPLEMENTED("UTHREADS: uthread_cond_wait");
     uthread_nopreempt_on();
     uthread_mtx_unlock(mtx);
     utqueue_enqueue(&cond->uc_waiters,ut_curthr);
     uthread_block();
-
-
     uthread_mtx_lock(mtx);
     uthread_nopreempt_off();
-    
-    return;
-    
+    return; 
 }
 
 
@@ -71,7 +53,6 @@ uthread_cond_wait(uthread_cond_t *cond, uthread_mtx_t *mtx)
 void
 uthread_cond_broadcast(uthread_cond_t *cond)
 {
-    //N_OT_YET_IMPLEMENTED("UTHREADS: uthread_cond_broadcast");
     uthread_nopreempt_on();
     while(!utqueue_empty(&cond->uc_waiters))
     {
@@ -79,10 +60,7 @@ uthread_cond_broadcast(uthread_cond_t *cond)
         uthread_wake(to_be_waken);
     }
     uthread_nopreempt_off();
-    
 }
-
-
 
 /*
  * uthread_cond_signal
@@ -94,7 +72,6 @@ uthread_cond_broadcast(uthread_cond_t *cond)
 void
 uthread_cond_signal(uthread_cond_t *cond)
 {
-    // N_OT_YET_IMPLEMENTED("UTHREADS: uthread_cond_signal");
     uthread_nopreempt_on();
     if(!utqueue_empty(&cond->uc_waiters))
     {

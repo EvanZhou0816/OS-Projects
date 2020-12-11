@@ -1,11 +1,3 @@
-/*
- *   FILE: uthread_queue.h 
- * AUTHOR: Peter Demoreuille
- *  DESCR: a queue of threads
- *   DATE: Sun Sep  9 15:02:12 2001
- *
- */
-
 #ifndef __uthread_queue_h__
 #define __uthread_queue_h__
 

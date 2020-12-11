@@ -1,13 +1,3 @@
-/*
- *   FILE: uthread.h 
- * AUTHOR: Peter Demoreuille
- *  DESCR: userland threads
- *   DATE: Sat Sep  8 10:56:08 2001
- *
- * Modified for use with preemptive scheduling in January 2020 by Tom Doeppner
- *
- */
-
 #ifndef __uthread_h__
 #define __uthread_h__
 
@@ -25,12 +15,6 @@
 #define UTH_MAX_UTHREADS	64		/* max threads */
 #define	UTH_STACK_SIZE		64*1024		/* stack size */
 
-#define NOT_YET_IMPLEMENTED(msg) \
-    do { \
-        fprintf(stderr, "Not yet implemented at %s:%i -- %s\n", \
-            __FILE__, __LINE__, (msg)); \
-    } while(0);
-
 #define	PANIC(err) \
 	do { \
 		fprintf(stderr, "PANIC at %s:%i -- %s\n", \
@@ -44,8 +28,6 @@
 
 typedef int uthread_id_t;
 typedef void(*uthread_func_t)(long, char *argv[]);
-
-
 
 typedef enum
 {
